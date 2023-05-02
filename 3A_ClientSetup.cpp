@@ -5,7 +5,7 @@
 using namespace std;
 
 //Config
-#define ServerIP "192.168.18.5"
+#define ServerIP "192.168.47.1"
 #define DbName "magang-database"
 #define DbUsername "client"
 #define DbPassword ""
