@@ -1,8 +1,9 @@
 ﻿  3A_ClientSetup.cpp
-D:\LEAP Magang\3A_ClientSetup\3A_ClientSetup.cpp(142,13): warning C4326: return type of 'main' should be 'int' instead of 'void'
+D:\LEAP Magang\3A_ClientSetup\3A_ClientSetup.cpp(141,13): warning C4326: return type of 'main' should be 'int' instead of 'void'
+D:\LEAP Magang\3A_ClientSetup\3A_ClientSetup.cpp(158,106): warning C4129: '.': unrecognized character escape sequence
   Generating code
-  3 of 210 functions ( 1.4%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+  760 of 881 functions (86.3%) were compiled, the rest were copied from previous compilation.
+    671 functions were new in current compilation
+    30 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   3A_ClientSetup.vcxproj -> D:\LEAP Magang\3A_ClientSetup\x64\Release\3A_ClientSetup.exe

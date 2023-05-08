@@ -2,25 +2,24 @@
 #include <mysql.h>
 #include <string>
 #include <fstream>
+#include <regex>
 using namespace std;
-
-//Config
-#define ServerIP "192.168.47.1"
-#define DbName "magang-database"
-#define DbUsername "client"
-#define DbPassword ""
-#define DbPort 3306
 
 MYSQL* conn; MYSQL_ROW row; MYSQL_RES* res;
 string query; int clientID, qState;
+string ServerIP = "";
+string DbPort = "";
+string DbName = "";
+string DbUsername = "";
+string DbPassword = "";
 
 void connectToDatabase() {
 	conn = mysql_init(0);
-	conn = mysql_real_connect(conn, ServerIP, DbUsername, DbPassword, DbName, DbPort, NULL, 0);
+	conn = mysql_real_connect(conn, ServerIP.c_str(), DbUsername.c_str(), DbPassword.c_str(), DbName.c_str(), stoi(DbPort), NULL, 0);
 	while (!conn) {
 		cout << "Error connecting to Database, Reconnecting...\n";
 		conn = mysql_init(0);
-		conn = mysql_real_connect(conn, ServerIP, DbUsername, DbPassword, DbName, DbPort, NULL, 0);
+		conn = mysql_real_connect(conn, ServerIP.c_str(), DbUsername.c_str(), DbPassword.c_str(), DbName.c_str(), stoi(DbPort), NULL, 0);
 		Sleep(3000);
 	}
 	cout << "Connected to Database!\n";
@@ -51,10 +50,10 @@ string sqlQuery(string query) {
 
 		do {
 			conn = mysql_init(0);
-			conn = mysql_real_connect(conn, ServerIP, DbUsername, DbPassword, DbName, DbPort, NULL, 0);
+			conn = mysql_real_connect(conn, ServerIP.c_str(), DbUsername.c_str(), DbPassword.c_str(), DbName.c_str(), stoi(DbPort), NULL, 0);
 			while (!conn) {
 				conn = mysql_init(0);
-				conn = mysql_real_connect(conn, ServerIP, DbUsername, DbPassword, DbName, DbPort, NULL, 0);
+				conn = mysql_real_connect(conn, ServerIP.c_str(), DbUsername.c_str(), DbPassword.c_str(), DbName.c_str(), stoi(DbPort), NULL, 0);
 				cout << "Error connecting to Database, Reconnecting...\n";
 				Sleep(3000);
 			}
@@ -91,7 +90,7 @@ void setup() {
 
 	cout << "\nChecking ClientID.txt...";
 	fstream in("ClientID.txt", fstream::in);
-	if (in.is_open()) { 
+	if (in.is_open()) {
 		in >> clientID;
 		cout << " OK\n";
 	}
@@ -141,6 +140,31 @@ void setup() {
 
 void main() {
 	cout << "[ Client ID Setup ]\n";
+	//Reading ServerConfig.txt
+	fstream SrvCfg("ServerConfig.txt");
+	if (!SrvCfg.is_open()) {
+		cout << "ServerConfig.txt not found!\n";
+		cout << "Cannot find ServerConfig.txt! Please make new one with these variables PER LINE: ServerIP, DbPort, DbName, DbUsername, DbPassword\n";
+		system("pause");
+		exit(0);
+	}
+	else {
+		getline(SrvCfg, ServerIP);
+		getline(SrvCfg, DbPort);
+		getline(SrvCfg, DbName);
+		getline(SrvCfg, DbUsername);
+		getline(SrvCfg, DbPassword);
+
+		if (ServerIP == "" || DbPort == "" || DbName == "" || DbUsername == "" || !regex_match(ServerIP, regex("^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$"))) {
+			SrvCfg.close();
+			remove("ServerConfig.txt");
+			cout << "Invalid ServerConfig.txt file.\n";
+			cout << "Invalid ServerConfig.txt! Please make new one with these variables PER LINE: ServerIP, DbPort, DbName, DbUsername, DbPassword\n";
+			system("pause");
+			exit(0);
+		}
+	}
+	SrvCfg.close();
 	cout << "Connecting to the Database...\n";
 	connectToDatabase();
 	setup();
