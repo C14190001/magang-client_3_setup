@@ -2,7 +2,7 @@
 #include <mysql.h>
 #include <string>
 #include <fstream>
-#include <regex>
+#include <regex> 
 using namespace std;
 
 MYSQL* conn; MYSQL_ROW row; MYSQL_RES* res;
@@ -12,6 +12,27 @@ string DbPort = "";
 string DbName = "";
 string DbUsername = "";
 string DbPassword = "";
+
+string getAllMacAddress() {
+	string line = "";
+	string line2 = "";
+	ifstream ipFile;
+	int offset;
+	system("ipconfig /all > ip.txt");
+	ipFile.open("ip.txt");
+	if (ipFile.is_open()) {
+		while (!ipFile.eof()) {
+			getline(ipFile, line);
+			if ((offset = line.find("Physical Address. . . . . . . . . :")) != string::npos) {
+				line.erase(0, 39);
+				line2 += line + "/";
+			}
+		}
+	}
+	ipFile.close();
+	remove("ip.txt");
+	return line2;
+}
 
 void connectToDatabase() {
 	conn = mysql_init(0);
@@ -86,6 +107,20 @@ string sqlQuery(string query) {
 }
 
 void setup() {
+	string getMAC = getAllMacAddress();
+	string sqlWhere = "WHERE `client_specs`.`mac` LIKE '%";
+	int b = 0;
+	for (int i = 0; i < getMAC.length(); i++) {
+		if (getMAC[i] == '/') {
+			if (b > 0) {
+				sqlWhere += " AND `client_specs`.`mac` LIKE '%";
+			}
+			sqlWhere += getMAC.substr(b, i - b);
+			sqlWhere += "%'";
+			b = i + 1;
+		}
+	}
+
 	int choice = -1;
 
 	cout << "\nChecking ClientID.txt...";
@@ -99,7 +134,7 @@ void setup() {
 
 	if (clientID == NULL) {
 		while (choice == -1) {
-			cout << "\nIs this an New or Existing PC? (0 for Existing PC. 1 for New PC)\nChoice: ";
+			cout << "\nIs this an New or Existing PC? (0 for Existing PC. 1 for New PC. 2 (AUTO) Detect using MAC Address)\nChoice: ";
 			cin >> choice; cin.get();
 			if (choice == 0) {
 				cout << "Input Client ID number: ";
@@ -117,6 +152,23 @@ void setup() {
 				clientID = stoi(sqlQuery("SELECT `id` FROM `clients` ORDER BY `id` DESC LIMIT 1"));
 				cout << " OK\n";
 				cout << "\nYour new Client ID is: " << clientID << "\n\n";
+			}
+			else if (choice == 2) {
+				int sqlFind = stoi(sqlQuery("SELECT `id` FROM `client_specs` " + sqlWhere));
+				if (sqlFind != -1) {
+					clientID = sqlFind;
+					cout << "\nYour Client ID is: " << clientID << "\n\n";
+				}
+				else {
+					cout << "\nClient ID not found in the Database.\n";
+
+					cout << "\nCreating an new Client ID...";
+					sqlQuery("INSERT INTO `clients` (`id`, `updated?`) VALUES (NULL, '0')");
+					clientID = stoi(sqlQuery("SELECT `id` FROM `clients` ORDER BY `id` DESC LIMIT 1"));
+					cout << " OK\n";
+					cout << "\nYour new Client ID is: " << clientID << "\n\n";
+					//choice = -1;
+				}
 			}
 			else {
 				cout << "Invalid choice...\n";

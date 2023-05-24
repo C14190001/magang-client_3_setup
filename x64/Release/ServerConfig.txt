@@ -1,4 +1,4 @@
-192.168.47.1
+192.168.18.5
 3306
 magang-database
 client
