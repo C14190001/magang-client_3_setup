@@ -134,8 +134,9 @@ void setup() {
 
 	if (clientID == NULL) {
 		while (choice == -1) {
-			cout << "\nIs this an New or Existing PC? (0 for Existing PC. 1 for New PC. 2 (AUTO) Detect using MAC Address)\nChoice: ";
-			cin >> choice; cin.get();
+			//cout << "\nIs this an New or Existing PC? (0 for Existing PC. 1 for New PC. 2 (AUTO) Detect using MAC Address)\nChoice: ";
+			//cin >> choice; cin.get();
+			choice = 2;
 			if (choice == 0) {
 				cout << "Input Client ID number: ";
 				cin >> clientID; cin.get();

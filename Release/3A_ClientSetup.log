@@ -1,9 +1,9 @@
 ﻿  3A_ClientSetup.cpp
 D:\LEAP Magang\1A_ClientSetup\3A_ClientSetup.cpp(113,20): warning C4018: '<': signed/unsigned mismatch
-D:\LEAP Magang\1A_ClientSetup\3A_ClientSetup.cpp(193,13): warning C4326: return type of 'main' should be 'int' instead of 'void'
-D:\LEAP Magang\1A_ClientSetup\3A_ClientSetup.cpp(210,106): warning C4129: '.': unrecognized character escape sequence
+D:\LEAP Magang\1A_ClientSetup\3A_ClientSetup.cpp(194,13): warning C4326: return type of 'main' should be 'int' instead of 'void'
+D:\LEAP Magang\1A_ClientSetup\3A_ClientSetup.cpp(211,106): warning C4129: '.': unrecognized character escape sequence
   Generating code
-  7 of 900 functions ( 0.8%) were compiled, the rest were copied from previous compilation.
+  2 of 900 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
